@@ -1,7 +1,7 @@
 <?php 
 
     /*************************************************************************************
-     * Objetivo: Arquivo de rota, para segmentar as ações encaminhadas pela view
+     * Objetivo: Arquivo de rota, para segmentar as ações encaminhadas pela View
      *      (dados de um form, listagem de dados, uma ação de excluir ou atualizar)
      *      Esse arquivo será responsável por encaminhar as solicitações para a Controller
      * Dev: Gabriel Gomes
