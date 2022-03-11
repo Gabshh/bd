@@ -42,7 +42,7 @@
                         </div>
                     </div>
                    
-                    
+
                     <div class="campos">
                         <div class="cadastroInformacoesPessoais">
                             <label> Email: </label>
