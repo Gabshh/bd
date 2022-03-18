@@ -26,10 +26,32 @@
                 
                 //Import da controller Contatos
                 require_once('./controller/controllerContatos.php');
-                if($action == 'INSERIR')
-                    inserirContato($_POST);
-                elseif($action == 'EDITAR')
-                    atualizarContato($_POST);
+
+                //Validação para identificar o tipo de ação que será realizado
+                if($action == 'INSERIR'){
+                    //Chama a função de inserir na controller
+
+                    $resposta = inserirContato($_POST);
+
+                    //Valida o tipo de dados que a controller retornou
+                    if(is_bool($resposta)) { //Se for booleano 
+                        
+                        if($resposta) // Verificar se o retorno foi verdadeiro
+                            echo("<script>
+                                    alert('Registro inserido com sucesso'); 
+                                    window.location.href = 'index.php';
+                                </script>");
+                    //Se o retorno for um arry significa que houve erro no processo de inserção
+                    } elseif (is_array($resposta)) {
+                        echo("<script>
+                                alert('".$resposta['message']."'); 
+                                window.history.back();
+                            </script>");
+                    }
+                }
+
+                
+
                 break; 
         }
 
