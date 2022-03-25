@@ -5,7 +5,6 @@
         <title> Cadastro </title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
 
-
     </head>
     <body>
        
@@ -83,26 +82,32 @@
                 
                <?php
                
-                require_once('controller/controllerContatos.php');
-                $listContato = listarContato();
-                foreach($listContato as $item) {
+                    //Import do arquivo da controller para solicitar a listagem dos dados
+                    require_once('controller/controllerContatos.php');
+                    //Chama a função que vai retornar os dados de contatos
+                    $listContato = listarContato();
+
+                    //Estrutura de repetição para retirar os dados do array e printar na tela
+                    foreach($listContato as $item) {
 
                ?>
 
-                <tr id="tblLinhas">
-                    <td class="tblColunas registros"><?=$item['nome']?></td>
-                    <td class="tblColunas registros"><?=$item['celular']?></td>
-                    <td class="tblColunas registros"><?=$item['email']?></td>
-                   
-                    <td class="tblColunas registros">
-                            <img src="img/edit.png" alt="Editar" title="Editar" class="editar">
-                            <img src="img/trash.png" alt="Excluir" title="Excluir" class="excluir">
-                            <img src="img/search.png" alt="Visualizar" title="Visualizar" class="pesquisar">
-                    </td>
-                </tr>
+                    <tr id="tblLinhas">
+                        <td class="tblColunas registros"><?=$item['nome']?></td>
+                        <td class="tblColunas registros"><?=$item['celular']?></td>
+                        <td class="tblColunas registros"><?=$item['email']?></td>
+                    
+                        <td class="tblColunas registros">
+                                <img src="img/edit.png" alt="Editar" title="Editar" class="editar">
+                                <a href="router.php?component=contatos&action=deletar&id=<?=$item['id']?>">
+                                <img src="img/trash.png" alt="Excluir" title="Excluir" class="excluir">
+                                </a>
+                                <img src="img/search.png" alt="Visualizar" title="Visualizar" class="pesquisar">
+                        </td>
+                    </tr>
 
                 <?php
-                }
+                    }
                 ?>
 
             </table>

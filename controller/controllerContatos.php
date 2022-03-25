@@ -3,12 +3,13 @@
      * Objetivo: Arquivo responsável pela manipulação de dados de contatos
      * Obs (Este arquivo fará a ponte entre a View e a Model)
      * Dev: Gabriel Gomes
-     * Data: 18/03/2022
+     * Data: 25/03/2022
      * Versão: 2.0
      ************************************************************************************/
 
     // Função para receber dados da View e encaminhar para a Model (Inserir)
     function inserirContato($dadosContato) {
+
         // Validação para verificar se  o objeto esta vazio
         if(!empty($dadosContato)){
             /*
@@ -37,7 +38,7 @@
                     return true;
                 else
                     return array('idErro' => 1,
-                                'message' => 'Não foi possível inserir os dados no Banco de Dados');
+                                'message' => 'Não foi possível inserir os dados no banco de dados.');
 
             }
             else
@@ -46,6 +47,7 @@
         }
         
 
+    
     }
 
     //Função para receber dados da View e encaminhar para a Model (Atualizar)
@@ -54,8 +56,24 @@
     }
 
     //Função para realizar a exclusão de um contato
-    function excluirContato() {
-        
+    function excluirContato($id) {
+        //Validação para verificar se id contém um número válido
+        if($id != 0 && !empty($id) && is_numeric($id)) {
+
+            //Import do arquivo de contato
+            require_once('model/bd/contato.php');
+            
+            //Chama a função da model e valida se o retorno foi verdadeiro ou falso
+            if(deleteContato($id)){
+                return true;
+            }else{
+                return array('idErro' => 3,
+                            'message' => 'O banco de dados não pode excluir o registro.');
+            }
+        }else{
+            return array('idErro' => 4,
+                        'message' => 'Não é possível excluir o registro sem informar um id válido.');
+        }
     }
 
     //Função para solicitar os dados da Model e encamminhar a lista de contatos para a View
