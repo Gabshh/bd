@@ -24,11 +24,11 @@
                 OBS: criar as chaves do array conforme os nomes dos atributos do BD
                 */
                 $arrayDados = array(
-                    "nome" => $dadosContato['txtNome'],
-                    "telefone" => $dadosContato['txtTelefone'],
-                    "celular" => $dadosContato['txtCelular'],
-                    "email" => $dadosContato['txtEmail'],
-                    "obs" => $dadosContato['txtObs'],
+                    "nome"      => $dadosContato['txtNome'],
+                    "telefone"  => $dadosContato['txtTelefone'],
+                    "celular"   => $dadosContato['txtCelular'],
+                    "email"     => $dadosContato['txtEmail'],
+                    "obs"       => $dadosContato['txtObs'],
                 );
 
                 //import do arquivo de modelagem para manipular o BD
@@ -75,8 +75,55 @@
     }
 
     //Função para receber dados da View e encaminhar para a Model (Atualizar)
-    function atualizarContato() {
-        
+    function atualizarContato($dadosContato, $id) {
+         // Validação para verificar se  o objeto esta vazio
+        if(!empty($dadosContato)){
+            /*
+             Validação de caixa vazia dos elementos nome celular e email,
+             pois são obrigatórios no BD
+            */
+            if(!empty($dadosContato['txtNome']) && !empty($dadosContato['txtCelular']) && 
+               !empty($dadosContato['txtEmail'])){ 
+
+                //Validação para garantir que o id seja válido
+                if(!empty($id) && $id != 0 && is_numeric($id) ){
+                    
+                    /* 
+                    Criação do array de dados que será encaminhado a model para inserir no BD,
+                    é importante criar esse array conforme as necessidades de manipulação do BD
+                    OBS: criar as chaves do array conforme os nomes dos atributos do BD
+                    */
+                    $arrayDados = array(
+                        "id"        => $id,
+                        "nome"      => $dadosContato['txtNome'],
+                        "telefone"  => $dadosContato['txtTelefone'],
+                        "celular"   => $dadosContato['txtCelular'],
+                        "email"     => $dadosContato['txtEmail'],
+                        "obs"       => $dadosContato['txtObs'],
+                    );
+
+                    //import do arquivo de modelagem para manipular o BD
+                    require_once('model/bd/contato.php');
+                    //Chama a função que fará o update no BD (esta função está na model)
+                    if(updateContato($arrayDados))
+                        return true;
+                    else
+                        return array(
+                                    'idErro' => 1,
+                                    'message' => 'Não foi possível atualizar os dados no banco de dados.'
+                                    );
+
+                }else{
+                    return array(
+                                'idErro' => 4,
+                                'message' => 'Não é possível editar o registro sem informar um id válido.'
+                                );
+                } 
+
+            } else
+                return array('idErro' => 2,
+                            'message' => 'Existem campos obrigatórios que não foram preenchidos.');
+        }
     }
 
     //Função para realizar a exclusão de um contato

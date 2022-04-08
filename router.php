@@ -31,7 +31,6 @@
                 //Validação para identificar o tipo de ação que será realizado
                 if($action == 'INSERIR'){
                     //Chama a função de inserir na controller
-
                     $resposta = inserirContato($_POST);
 
                     //Valida o tipo de dados que a controller retornou
@@ -99,6 +98,29 @@
                     assim não havendo um novo carregamento da página*/
                      require_once('index.php');
 
+                }elseif($action == 'EDITAR') {
+
+                    //Recebe o id que foi encaminhado no action do form pela URL
+                    $idContato = $_GET['id'];
+
+                    //Chama a função de editar na controller
+                    $resposta = atualizarContato($_POST, $idContato);
+
+                    //Valida o tipo de dados que a controller retornou
+                    if(is_bool($resposta)) { //Se for booleano 
+                        
+                        if($resposta) // Verificar se o retorno foi verdadeiro
+                            echo("<script>
+                                    alert('Registro atualizado com sucesso'); 
+                                    window.location.href = 'index.php';
+                                </script>");
+                    //Se o retorno for um array significa que houve erro no processo de edição
+                    }elseif (is_array($resposta)) {
+                        echo("<script>
+                                alert('".$resposta['message']."'); 
+                                window.history.back();
+                            </script>"); 
+                    }
                 }
                 break; 
         }

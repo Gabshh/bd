@@ -1,6 +1,13 @@
 <?php 
 
-//Valida se a utilização de variáveis de sessão está ativa no servidor
+    $id = (int) null;
+
+    /*Essa variável foi criada para diferenciar no action do formulário
+    qual ação deveria ser levada para a router (inserir ou editar).
+    Nas condções abaixo, mudamos o action dessa variável para a ação de editar*/
+    $actionForm = (string) "router.php?component=contatos&action=inserir";
+
+    //Valida se a utilização de variáveis de sessão está ativa no servidor
     if (session_status()) {
 
         //Valida se a variável de sessão dadosContato não está vazia
@@ -10,10 +17,16 @@
             $telefone   = $_SESSION['dadosContato']['telefone'];
             $celular    = $_SESSION['dadosContato']['celular'];
             $email      = $_SESSION['dadosContato']['email'];
-            $obs      = $_SESSION['dadosContato']['obs'];
+            $obs        = $_SESSION['dadosContato']['obs'];
+        
+            /*Mudamos a ação do form para editar o registro no click do botão salvar */
+            $actionForm = "router.php?component=contatos&action=editar&id=".$id;
+
+            //Destrói uma variável da memoria do servidor
+            unset($_SESSION['dadosContato']);
+        
         }
     }
-    
 
 ?>
 
@@ -33,13 +46,13 @@
                 
             </div>
             <div id="cadastroInformacoes">
-                <form  action="router.php?component=contatos&action=inserir" name="frmCadastro" method="post" >
+                <form  action="<?=$actionForm?>" name="frmCadastro" method="post" >
                     <div class="campos">
                         <div class="cadastroInformacoesPessoais">
                             <label> Nome: </label>
                         </div>
                         <div class="cadastroEntradaDeDados">
-                            <input type="text" name="txtNome" value="<?=$nome?>" placeholder="Digite seu Nome" maxlength="100">
+                            <input type="text" name="txtNome" value="<?= isset($nome)?$nome:null ?>" placeholder="Digite seu Nome" maxlength="100">
                         </div>
                     </div>
                                      
@@ -48,7 +61,7 @@
                             <label> Telefone: </label>
                         </div>
                         <div class="cadastroEntradaDeDados">
-                            <input type="tel" name="txtTelefone" value="<?=$telefone?>">
+                            <input type="tel" name="txtTelefone" value="<?= isset($telefone)?$telefone:null ?>">
                         </div>
                     </div>
                     <div class="campos">
@@ -56,7 +69,7 @@
                             <label> Celular: </label>
                         </div>
                         <div class="cadastroEntradaDeDados">
-                            <input type="tel" name="txtCelular" value="<?=$celular?>">
+                            <input type="tel" name="txtCelular" value="<?= isset($celular)?$celular:null ?>">
                         </div>
                     </div>
                    
@@ -66,7 +79,7 @@
                             <label> Email: </label>
                         </div>
                         <div class="cadastroEntradaDeDados">
-                            <input type="email" name="txtEmail" value="<?=$email?>">
+                            <input type="email" name="txtEmail" value="<?= isset($email)?$email:null ?>">
                         </div>
                     </div>
                     <div class="campos">
@@ -74,7 +87,7 @@
                             <label> Observações: </label>
                         </div>
                         <div class="cadastroEntradaDeDados">
-                            <textarea name="txtObs" cols="50" rows="7"><?=$obs?></textarea>
+                            <textarea name="txtObs" cols="50" rows="7"><?= isset($obs)?$obs:null ?></textarea>
                         </div>
                     </div>
                     <div class="enviar">
@@ -107,7 +120,8 @@
                     $listContato = listarContato();
 
                     //Estrutura de repetição para retirar os dados do array e printar na tela
-                    foreach($listContato as $item) {
+                    if(!empty($listContato)) {
+                        foreach($listContato as $item) {
 
                ?>
 
@@ -130,6 +144,7 @@
                     </tr>
 
                 <?php
+                        }
                     }
                 ?>
 
