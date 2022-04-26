@@ -25,7 +25,8 @@
                     telefone,
                     celular,
                     email, 
-                    obs
+                    obs,
+                    foto
                     ) 
                 values 
                     (
@@ -33,7 +34,8 @@
                     '".$dadosContato['telefone']."', 
                     '".$dadosContato['celular']."', 
                     '".$dadosContato['email']."', 
-                    '".$dadosContato['obs']."'
+                    '".$dadosContato['obs']."',
+                    '".$dadosContato['foto']."'
                     );";
         
         //echo($sql);
@@ -194,7 +196,8 @@
                     "telefone"  => $rsDados['telefone'],
                     "celular"   => $rsDados['celular'],
                     "email"     => $rsDados['email'],
-                    "obs"       => $rsDados['obs']                  
+                    "obs"       => $rsDados['obs'],
+                    "foto"      => $rsDados['foto']              
                 );
                 $cont++;
 
