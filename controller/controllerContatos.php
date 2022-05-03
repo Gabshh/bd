@@ -157,13 +157,17 @@
                     //import do arquivo de modelagem para manipular o BD
                     require_once('model/bd/contato.php');
                     //Chama a função que fará o update no BD (esta função está na model)
-                    if(updateContato($arrayDados))
+                    if(updateContato($arrayDados)){
+                        unlink(DIRETORIO_FILE_UPLOAD.$foto);
                         return true;
-                    else
+                    }
+                        
+                    else {
                         return array(
                                     'idErro' => 1,
                                     'message' => 'Não foi possível atualizar os dados no banco de dados.'
                                     );
+                    }
 
                 }else{
                     return array(
