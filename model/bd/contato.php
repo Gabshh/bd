@@ -87,7 +87,8 @@
                     "telefone"  => $rsDados['telefone'],
                     "celular"   => $rsDados['celular'],
                     "email"     => $rsDados['email'],
-                    "obs"       => $rsDados['obs']                  
+                    "obs"       => $rsDados['obs'],
+                    "foto"      => $rsDados['foto']             
                 );
 
             }
@@ -116,7 +117,8 @@
                     telefone     = '".$dadosContato['telefone']."',
                     celular      = '".$dadosContato['celular']."',
                     email        = '".$dadosContato['email']."', 
-                    obs          = '".$dadosContato['obs']."'
+                    obs          = '".$dadosContato['obs']."',
+                    foto          = '".$dadosContato['foto']."'
 
                 where id_contato = ".$dadosContato['id'];
                      
@@ -206,7 +208,7 @@
             //Solicita o fechamento da conexão com o BD
             fecharConexaoMysql($conexao);
 
-            return $arrayDados;
+            return @$arrayDados;
         }
     }
 ?>

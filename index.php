@@ -1,15 +1,21 @@
 <?php 
 
+    // Import do arquivo de configurações do projeto
+    require_once('modulo/config.php');
+
     $id = (int) null;
 
     /*Essa variável foi criada para diferenciar no action do formulário
     qual ação deveria ser levada para a router (inserir ou editar).
     Nas condções abaixo, mudamos o action dessa variável para a ação de editar*/
     $actionForm = (string) "router.php?component=contatos&action=inserir";
+    
+    // Variável para carregar o nome da foto no banco de dados
+    $foto = (string) null;
 
     //Valida se a utilização de variáveis de sessão está ativa no servidor
     if (session_status()) {
-
+        //Processo de edição
         //Valida se a variável de sessão dadosContato não está vazia
         if (!empty($_SESSION['dadosContato'])) {
             $id         = $_SESSION['dadosContato']['id'];
@@ -18,9 +24,10 @@
             $celular    = $_SESSION['dadosContato']['celular'];
             $email      = $_SESSION['dadosContato']['email'];
             $obs        = $_SESSION['dadosContato']['obs'];
+            $foto       = $_SESSION['dadosContato']['foto'];
         
             /*Mudamos a ação do form para editar o registro no click do botão salvar */
-            $actionForm = "router.php?component=contatos&action=editar&id=".$id;
+            $actionForm = "router.php?component=contatos&action=editar&id=".$id."&foto=".$foto;
 
             //Destrói uma variável da memoria do servidor
             unset($_SESSION['dadosContato']);
@@ -106,6 +113,10 @@
                         </div>
                     </div>
                     
+                    <div class="campos">
+                        <img src="<?=DIRETORIO_FILE_UPLOAD.$foto?>" alt="fotinha">
+                    </div>
+
                     <div class="enviar">
                         <div class="enviar">
                             <input type="submit" name="btnEnviar" value="Salvar">
@@ -140,20 +151,22 @@
                     if(!empty($listContato)) {
                         foreach($listContato as $item) {
 
+                            // Variável para carregar a foto que veio do BD
+                            $foto = $item['foto'];
                ?>
 
                     <tr id="tblLinhas">
                         <td class="tblColunas registros"><?=$item['nome']?></td>
                         <td class="tblColunas registros"><?=$item['celular']?></td>
                         <td class="tblColunas registros"><?=$item['email']?></td>
-                        <td class="tblColunas registros"> <img src="arquivos/<?=$item['foto']?>" alt="fotinha" class="foto" > </td>
+                        <td class="tblColunas registros"> <img src="<?=DIRETORIO_FILE_UPLOAD.$foto?>" alt="fotinha" class="foto" > </td>
                     
                         <td class="tblColunas registros">
                             <a href="router.php?component=contatos&action=buscar&id=<?=$item['id']?>">
                                 <img src="img/edit.png" alt="Editar" title="Editar" class="editar">
                             </a>
 
-                            <a onclick="return confirm('Deseja realmente excluir esse item?');" href="router.php?component=contatos&action=deletar&id=<?=$item['id']?>">
+                            <a onclick="return confirm('Deseja realmente excluir esse item?');" href="router.php?component=contatos&action=deletar&id=<?=$item['id']?>&foto=<?=$foto?>">
                                 <img src="img/trash.png" alt="Excluir" title="Excluir" class="excluir">
                             </a>
 
