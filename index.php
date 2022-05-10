@@ -13,6 +13,9 @@
     // Variável para carregar o nome da foto no banco de dados
     $foto = (string) null;
 
+    // variável para ser utilizada no carregar dos estados (opção de ditar)
+    $id_estado = (int) null;
+
     //Valida se a utilização de variáveis de sessão está ativa no servidor
     if (session_status()) {
         //Processo de edição
@@ -25,6 +28,7 @@
             $email      = $_SESSION['dadosContato']['email'];
             $obs        = $_SESSION['dadosContato']['obs'];
             $foto       = $_SESSION['dadosContato']['foto'];
+            $id_estado  = $_SESSION['dadosContato']['id_estado'];
         
             /*Mudamos a ação do form para editar o registro no click do botão salvar */
             $actionForm = "router.php?component=contatos&action=editar&id=".$id."&foto=".$foto;
@@ -67,7 +71,31 @@
                             <input type="text" name="txtNome" value="<?= isset($nome)?$nome:null ?>" placeholder="Digite seu Nome" maxlength="100">
                         </div>
                     </div>
-                                     
+                    
+                    <div class="campos">
+                        <div class="cadastroInformacoesPessoais">
+                            <label> Estado: </label>
+                        </div>
+                        <div class="cadastroEntradaDeDados">
+                            <select name="sltEstado" id="" required>
+                                <option value="">Selecione um item:</option>
+                                <?php 
+
+                                    // import da controller de estados
+                                    require_once('./controller/controllerEstados.php');
+
+                                    // chama a função para carregar todos os estados no BD
+                                    $listEstados = listarEstado();
+                                    foreach($listEstados as $item) {
+                                        ?>
+                                            <option <?=$id_estado==$item['id_estado']?'selected':null?> value="<?=$item['id_estado']?>"><?=$item['nome']?></option>
+                                        <?php
+                                    }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="campos">
                         <div class="cadastroInformacoesPessoais">
                             <label> Telefone: </label>
@@ -85,7 +113,6 @@
                         </div>
                     </div>
                    
-
                     <div class="campos">
                         <div class="cadastroInformacoesPessoais">
                             <label> Email: </label>

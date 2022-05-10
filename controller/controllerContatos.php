@@ -7,7 +7,8 @@
      * Versão: 2.0
      ************************************************************************************/
 
-
+    //import do arquivo de configuração do projeto
+    require_once('./modulo/config.php');
 
     // Função para receber dados da View e encaminhar para a Model (Inserir)
     function inserirContato($dadosContato, $file) {
@@ -52,7 +53,8 @@
                     "celular"   => $dadosContato['txtCelular'],
                     "email"     => $dadosContato['txtEmail'],
                     "obs"       => $dadosContato['txtObs'],
-                    "foto"      => $novaFoto
+                    "foto"      => $novaFoto,
+                    "id_estado" => $dadosContato['sltEstado']
                 );
 
                 //import do arquivo de modelagem para manipular o BD
@@ -101,6 +103,8 @@
     //Função para receber dados da View e encaminhar para a Model (Atualizar)
     function atualizarContato($dadosContato, $id) {
 
+        $statusUpload = (boolean) false;
+
         require_once('model/bd/contato.php');
 
         // Recebe o id enviado pelo arrayDados
@@ -130,8 +134,10 @@
                         // import da função de upload
                         require_once('modulo/upload.php');
 
+
                         // chama a função de upload para enviar a nova foto ao servidor
                         $novaFoto = uploadFile($file['fileFoto']);
+                        $statusUpload = true;
 
                     } else {
                         //permanece a mesma foto no BD
@@ -151,14 +157,21 @@
                         "celular"   => $dadosContato['txtCelular'],
                         "email"     => $dadosContato['txtEmail'],
                         "obs"       => $dadosContato['txtObs'],
-                        "foto"      => $novaFoto
+                        "foto"      => $novaFoto,
+                        "id_estado" => $dadosContato['sltEstado']
                     );
 
                     //import do arquivo de modelagem para manipular o BD
                     require_once('model/bd/contato.php');
                     //Chama a função que fará o update no BD (esta função está na model)
                     if(updateContato($arrayDados)){
-                        unlink(DIRETORIO_FILE_UPLOAD.$foto);
+
+                        // Validação para verificar se será necessário apagar a foto antiga
+                        // está variável foi ativada em true na linha 138 quando realizamos o upload de uma nova foto para o servidor
+                        if ($statusUpload) {
+                            // apaga a foto antiga da pasta do servidor
+                            unlink(DIRETORIO_FILE_UPLOAD.$foto);
+                        }
                         return true;
                     }
                         

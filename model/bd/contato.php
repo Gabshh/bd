@@ -26,7 +26,8 @@
                     celular,
                     email, 
                     obs,
-                    foto
+                    foto,
+                    id_estado
                     ) 
                 values 
                     (
@@ -35,7 +36,8 @@
                     '".$dadosContato['celular']."', 
                     '".$dadosContato['email']."', 
                     '".$dadosContato['obs']."',
-                    '".$dadosContato['foto']."'
+                    '".$dadosContato['foto']."',
+                    '".$dadosContato['id_estado']."'
                     );";
         
         //echo($sql);
@@ -118,7 +120,8 @@
                     celular      = '".$dadosContato['celular']."',
                     email        = '".$dadosContato['email']."', 
                     obs          = '".$dadosContato['obs']."',
-                    foto          = '".$dadosContato['foto']."'
+                    foto          = '".$dadosContato['foto']."',
+                    id_estado          = '".$dadosContato['id_estado']."'
 
                 where id_contato = ".$dadosContato['id'];
                      
@@ -173,7 +176,7 @@
         $conexao = conexaoMysql();
 
         //Script para listar todos os dados do BD
-        $sql = "select * from table_contatos order by id_contato desc";
+        $sql = "select * from table_contatos order by id_contato desc"; // decrescente
         
         //Executa o script sql no BD e guarda o retorno dos dados, se houver
         $result = mysqli_query($conexao, $sql);
@@ -199,7 +202,8 @@
                     "celular"   => $rsDados['celular'],
                     "email"     => $rsDados['email'],
                     "obs"       => $rsDados['obs'],
-                    "foto"      => $rsDados['foto']              
+                    "foto"      => $rsDados['foto'],
+                    "estado"    => $rsDados['id_estado']
                 );
                 $cont++;
 
@@ -208,7 +212,11 @@
             //Solicita o fechamento da conexão com o BD
             fecharConexaoMysql($conexao);
 
-            return @$arrayDados;
+            if(isset($arrayDados)) {
+                return $arrayDados;
+            }else {
+                return false;
+            }          
         }
     }
 ?>
