@@ -90,7 +90,8 @@
                     "celular"   => $rsDados['celular'],
                     "email"     => $rsDados['email'],
                     "obs"       => $rsDados['obs'],
-                    "foto"      => $rsDados['foto']             
+                    "foto"      => $rsDados['foto'],
+                    "id_estado" => $rsDados['id_estado'],
                 );
 
             }
@@ -203,7 +204,7 @@
                     "email"     => $rsDados['email'],
                     "obs"       => $rsDados['obs'],
                     "foto"      => $rsDados['foto'],
-                    "estado"    => $rsDados['id_estado']
+                    "id_estado" => $rsDados['id_estado']
                 );
                 $cont++;
 
