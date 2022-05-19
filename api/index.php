@@ -21,4 +21,18 @@
     //Recebe a URL digitada na requisição
     $urlHTTP = (string) $_GET['url'];
 
+    // Converte a URL requisitada em um array para dividir as opções de busca, que é separada pela barra
+    $url = explode('/', $urlHTTP);
+
+    // Verifica qual a API será encaminhada a requisição (contatos, estados, etc)
+    switch (strtoupper($url[0])) {
+        case 'CONTATOS':
+            require_once('contatos/index.php');
+            break;
+            
+        case 'ESTADOS':
+            require_once('estados/index.php');
+            break;
+    }
+
 ?>
