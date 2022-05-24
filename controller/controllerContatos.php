@@ -8,7 +8,7 @@
      ************************************************************************************/
 
     //import do arquivo de configuração do projeto
-    require_once(SRC.'./modulo/config.php');
+    require_once('./modulo/config.php');
 
     // Função para receber dados da View e encaminhar para a Model (Inserir)
     function inserirContato($dadosContato, $file) {
@@ -208,9 +208,9 @@
         if($id != 0 && !empty($id) && is_numeric($id)) {
 
             //Import do arquivo de contato
-            require_once('model/bd/contato.php');
+            require_once(SRC.'model/bd/contato.php');
             // Import dp arquivo de configurações do projeto
-            require_once('modulo/config.php');
+            // require_once('modulo/config.php');
             
             //Chama a função da model e valida se o retorno foi verdadeiro ou falso
             if(deleteContato($id)){
@@ -220,7 +220,7 @@
                     
                     // unlink() - função para apagar um arquivo de um diretório
                     // Permite apagar a foto fisicamente do diretório no servidor
-                    if(unlink(DIRETORIO_FILE_UPLOAD.$foto)) {
+                    if(unlink(SRC.DIRETORIO_FILE_UPLOAD.$foto)) {
                         return true;
                     }else {    
                         return array('idErro' => 5,
