@@ -8,30 +8,35 @@
      ************************************************************************************/
 
     //import do arquivo de configuração do projeto
-    require_once('./modulo/config.php');
+    // require_once('./modulo/config.php');
+    require_once(SRC.'./modulo/config.php');
 
     // Função para receber dados da View e encaminhar para a Model (Inserir)
-    function inserirContato($dadosContato, $file) {
+    function inserirContato($dadosContato) {
 
         $nomeFoto = (string) null;
 
         // Validação para verificar se  o objeto esta vazio
         if(!empty($dadosContato)){
+
+            // Recebe o objeto imagem que foi encaminhado dentro do array
+            $file = $dadosContato['file'];
+
             /*
              Validação de caixa vazia dos elementos nome celular e email,
              pois são obrigatórios no BD
             */
-            if(!empty($dadosContato['txtNome']) && !empty($dadosContato['txtCelular']) && 
-               !empty($dadosContato['txtEmail'])){ 
+            if(!empty($dadosContato[0]['nome']) && !empty($dadosContato[0]['celular']) && 
+               !empty($dadosContato[0]['email']) && !empty($dadosContato[0]['estado'])){ 
                 
                 // Validação para identificar se chegou um arquivo para upload
-                if ($file['fileFoto']['name'] != null) {
+                if ($file['foto']['name'] != null) {
 
                     // import da função de upload
-                    require_once('modulo/upload.php');
+                    require_once(SRC.'modulo/upload.php');
 
                     // chama a função de upload
-                    $nomeFoto = uploadFile($file['fileFoto']);
+                    $novaFoto = uploadFile($file['foto']);
                     
                     if (is_array($nomeFoto)) {
                         /* Caso aconteça algum erro no processo de upload, 
@@ -48,17 +53,17 @@
                 OBS: criar as chaves do array conforme os nomes dos atributos do BD
                 */
                 $arrayDados = array(
-                    "nome"      => $dadosContato['txtNome'],
-                    "telefone"  => $dadosContato['txtTelefone'],
-                    "celular"   => $dadosContato['txtCelular'],
-                    "email"     => $dadosContato['txtEmail'],
-                    "obs"       => $dadosContato['txtObs'],
+                    "nome"      => $dadosContato[0]['nome'],
+                    "telefone"  => $dadosContato[0]['telefone'],
+                    "celular"   => $dadosContato[0]['celular'],
+                    "email"     => $dadosContato[0]['email'],
+                    "obs"       => $dadosContato[0]['obs'],
                     "foto"      => $novaFoto,
-                    "id_estado" => $dadosContato['sltEstado']
+                    "id_estado" => $dadosContato[0]['estado']
                 );
 
                 //import do arquivo de modelagem para manipular o BD
-                require_once('model/bd/contato.php');
+                require_once(SRC.'model/bd/contato.php');
                 //Chama a função que fará o insert no BD (esta função está na model)
                 if(insertContato($arrayDados))
                     return true;
@@ -136,7 +141,7 @@
 
 
                         // chama a função de upload para enviar a nova foto ao servidor
-                        $novaFoto = uploadFile($file['fileFoto']);
+                        $novaFoto = uploadFile($file['foto']);
                         $statusUpload = true;
 
                     } else {
