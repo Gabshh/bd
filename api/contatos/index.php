@@ -5,6 +5,12 @@
      * $response - Envia dados de retorno da API
      * $args     - Permite receber dados de atributos na API
      * 
+     * Os metodos de requisição para uma API são
+     * GET       - para buscar dados
+     * POST      - para inserir um novo dado
+     * DELETE    - para apagar dados
+     * PUT/PATCH - para editar um dado já existente
+     * 
      \****************************************************************************/
 
     // import do arquivo de autoload que fará as instâncias do slim
@@ -236,6 +242,110 @@
                                     ->  withHeader ( 'Content-Type', 'application/json' )
                                     ->  write      ( ' {"message": "Formato do Content-Type não é inválido para esta requisição"} ' );
                 break;
+        }
+    });
+
+    //  EndPoint: Requisição para alterar contato, simulando o PUT
+    $app->post('/contatos/{id}', function ($request, $response, $args) {
+
+        if(is_numeric($args['id'])) {
+            
+            // Recebe o ID enviado no EndPoint através da variável ID
+            $id = $args['id'];
+
+            // Recebe do header da requisição qual será o content-ype
+            $contentTypeHeader = $request->getHeaderLine('Content-Type');
+
+            // Cria um array pois dependendo do content-type temos mais informações separadas pelo ';'
+            $contentType = explode(";",$contentTypeHeader);
+
+            switch ($contentType[0]) {
+                case 'multipart/form-data':
+
+                    // import da controller de contatos, que fará a busca de dados
+                    require_once('../modulo/config.php');
+                    require_once('../controller/controllerContatos.php');
+
+                    // Chama a função para buscar a foto que ja esta salva no BD
+                    if( $dadosContato = buscarContato($id) ) {
+
+                        $fotoAtual = $dadosContato['foto'];
+
+                        //Recebe os dados comuns enviado pelo corpo da requisição
+                        $dadosBody = $request->getParsedBody();
+
+                        // Recebe uma imagem enviada pelo corpo da requisição
+                        $uploadFiles = $request->getUploadedFiles();
+
+                        // Cria um array com todos os dados que chegaram pela requisição,
+                        // devido aos dados serem protegidos e recuperamos os dados pelos metodos do objeto
+                        $arrayFoto = array (
+                                                'name'      => $uploadFiles['foto']->getClientFileName(),
+                                                'type'      => $uploadFiles['foto']->getClientMediaType(),
+                                                'size'      => $uploadFiles['foto']->getSize(),
+                                                'tmp_name'  => $uploadFiles['foto']->file
+                                            );
+
+                        // Cria uma chave chamada 'foto' para colocar todos os dados do objeto, conforme é gerado em form HTML
+                        $file = array('foto' =>  $arrayFoto);
+
+                        // Cria um array com todos os dados comuns e do arquivo que será enviado para o servidor
+                        $arrayDados = array(
+                                                $dadosBody,
+                                                'file' => $file,
+                                                'id'   => $id,
+                                                'foto' => $fotoAtual
+                                            );
+
+                        $resposta = atualizarContato($arrayDados);
+                    
+                        if(is_bool($resposta) &&  $resposta == true) {
+                            return $response    ->  withStatus ( 201 )
+                                                ->  withHeader ( 'Content-Type', 'application/json' )
+                                                ->  write      ( ' {"message": "Registro atualizado com sucesso"} ' );
+                        } elseif(is_array($resposta) && $resposta['idErro']) {
+                            
+                            // Criando os JSON dos dados do erro
+                            $dadosJSON = createJSON($resposta);
+                            
+                            return $response    ->  withStatus ( 400 )
+                                                ->  withHeader ( 'Content-Type', 'application/json' )
+                                                ->  write      ( '{"message": "Houve um problema no processo de atualizar",
+                                                                        "Erro": '.$dadosJSON.' }');
+                        }
+                    
+                    } else {
+                        // Retorna um erro que significa que o cliente informou um ID inválido
+                        return $response    ->  withStatus ( 404 )
+                                            ->  withHeader ( 'Content-Type', 'application/json' )
+                                            ->  write      ( '{"message": "O ID informado não existe na base de dados."}' );
+                    }
+
+                    break;
+                
+                case 'application/json':
+                    
+                    $dadosBody = $request->getParsedBody();
+                    var_dump($dadosBody);
+                    die;
+                    
+                    return $response    ->  withStatus ( 200 )
+                                        ->  withHeader ( 'Content-Type', 'application/json' )
+                                        ->  write      ( ' {"message": "Formato selecionado foi JSON"} ' );
+                    break;
+                
+                default:
+                    return $response    ->  withStatus ( 400 )
+                                        ->  withHeader ( 'Content-Type', 'application/json' )
+                                        ->  write      ( ' {"message": "Formato do Content-Type não é inválido para esta requisição"} ' );
+                    break;
+            }
+
+        } else {
+            // Retorna um erro que significa que o cliente passou dados errados
+            return $response    ->  withStatus ( 404 )
+                                ->  withHeader ( 'Content-Type', 'application/json' )
+                                ->  write      ( '{"message": "É obrigatório informar um ID com formato válido"}' );
         }
     });
 
